@@ -1,5 +1,5 @@
 
-# Created by https://www.gitignore.io/api/vim,macos,linux,eclipse,windows,notepadpp,intellij+all,visualstudiocode
+# Created by https://www.gitignore.io/api/vim,macos,linux,eclipse,windows,notepadpp,intellij+all,visualstudiocode,maven
 
 ### Eclipse ###
 
@@ -240,5 +240,15 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+### Maven ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/
 
-# End of https://www.gitignore.io/api/vim,macos,linux,eclipse,windows,notepadpp,intellij+all,visualstudiocode
+# End of https://www.gitignore.io/api/vim,macos,linux,eclipse,windows,notepadpp,intellij+all,visualstudiocode,maven

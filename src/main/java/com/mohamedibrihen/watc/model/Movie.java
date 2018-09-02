@@ -6,6 +6,6 @@ import lombok.Data;
 public class Movie {
     private Integer id;
     private String title;
-    private Boolean hasDuringCredits;
-    private Boolean hasAfterCredits;
+    private Boolean hasExtrasDuringCredits;
+    private Boolean hasStinger;
 }
