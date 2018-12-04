@@ -5,4 +5,3 @@ WATC (What's after The Credits) is a RESTful API that retrieves data from severa
 
 - Paginate results (cf. https://www.baeldung.com/rest-api-pagination-in-spring)
 - HATEOAS ?
-- 

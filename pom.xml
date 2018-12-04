@@ -26,7 +26,7 @@
 
     <dependencies>
 
-        <!-- Spring boot based dependencies -->
+        <!-- Spring boot dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
