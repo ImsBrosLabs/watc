@@ -4,6 +4,8 @@ public final class Consts {
 
     private static final String SEARCH_QUERY_STRING= "?s=";
     private static final String AFTER_CREDITS_URL = "http://aftercredits.com/";
+
+    // TODO : use a different user agent to bypass the limitation ?
     private static final String MEDIA_STINGER_URL = "http://www.mediastinger.com/";
 
     public static final String AFTER_CREDITS_SEARCH_URL_TEMPLATE = AFTER_CREDITS_URL + SEARCH_QUERY_STRING;

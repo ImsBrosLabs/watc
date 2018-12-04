@@ -25,6 +25,8 @@
     </properties>
 
     <dependencies>
+
+        <!-- Spring boot dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -37,12 +39,19 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.2</version>
             <scope>provided</scope>
         </dependency>
 
+        <!-- HTMLunit -->
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
