@@ -61,20 +61,18 @@ public class MovieService {
 
     // TODO move to a utils class ?
     /**
-     * Formats the user entry by deleting non alphabetic characters.
+     * Removes accents and all the special characters a part of alpha numeric characters, spaces and hyphens.
      *
-     * @param title the user entry. Example : "déadpool" or "d_ead.po?ol" to "deadpool".
-     * @return formatted title.
+     * @param title The user entry.
+     * @return The formatted title.
      */
     public String formatMovieTitle(String title) {
         String result = null;
-
-        // Removing accents
         if (StringUtils.isNotBlank(title)) {
             result = StringUtils.stripAccents(title);
+            result = result.replaceAll("[^a-zA-Z0-9 -]", "");
         }
 
-        // Remove all the special characters a part of alpha numeric characters, space and hyphen.
-        return result != null ? result.replaceAll("[^a-zA-Z0-9 -]", "") : null;
+        return result;
     }
 }
