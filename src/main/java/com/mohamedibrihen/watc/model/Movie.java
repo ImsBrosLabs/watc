@@ -10,6 +10,6 @@ public class Movie {
     private String title;
     private Source source;
     private LocalDate releaseDate;
-    private Boolean hasExtrasDuringCredits;
-    private Boolean hasStinger;
+    private boolean hasExtrasDuringCredits;
+    private boolean hasStinger;
 }
