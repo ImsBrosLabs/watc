@@ -1,12 +1,10 @@
 package com.mohamedibrihen.watc.service;
 
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.mohamedibrihen.watc.model.Movie;
-import com.mohamedibrihen.watc.utils.Consts;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,17 +14,16 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import static com.mohamedibrihen.watc.utils.Consts.AFTERCREDITS_XPATH_ELEMENT_QUERY;
+import static com.mohamedibrihen.watc.utils.Consts.AFTER_CREDITS_SEARCH_URL_TEMPLATE;
 
 // TODO LOGGING
 @Service
 public class MovieService {
 
-    private static final String AFTERCREDITS_XPATH_ELEMENT_QUERY = "//div[contains(@class, 'td-module-thumb')]";
     private static final Logger LOGGER = LoggerFactory.getLogger(MovieService.class);
-    private static final int LIMIT_VALUE = 3;
 
     private final WebClient client;
 
@@ -44,31 +41,49 @@ public class MovieService {
         client.getOptions().setJavaScriptEnabled(false);
 
         try {
-            String searchUrl = Consts.AFTER_CREDITS_SEARCH_URL_TEMPLATE + URLEncoder.encode(formatMovieTitle(title), String.valueOf(StandardCharsets.UTF_8));
+
+            String formatedTitle = formatMovieTitle(title);
+
+            String searchUrl = AFTER_CREDITS_SEARCH_URL_TEMPLATE + URLEncoder.encode(formatedTitle, String.valueOf(StandardCharsets.UTF_8));
             HtmlPage page = client.getPage(searchUrl);
 
             List<HtmlElement> elements = page.getByXPath(AFTERCREDITS_XPATH_ELEMENT_QUERY);
 
-            List<DomElement> domElements = elements.stream()
-                    .limit(LIMIT_VALUE)
-                    .filter(htmlElement -> Objects.equals(htmlElement.getFirstElementChild().getAttribute("title"), "Deadpool (2016)*"))
-                    .collect(Collectors.toList());
+            // element > firstChild > attributs
+            Optional<HtmlElement> domElement = elements.stream()
+                    .filter(htmlElement -> compareTitle(htmlElement.getFirstElementChild().getAttribute("title"), formatedTitle)).findFirst();
 
-            /* TODO :
-             * - Check that there is an element
-             * - If so, get the href+link attributes
-             */
+            if (domElement.isPresent()) {
 
-            System.out.println();
+                DomElement firstElementChild = domElement.get().getFirstElementChild();
 
-        } catch (IOException | FailingHttpStatusCodeException e) {
+                // This will get the movie and optionally the year of release.
+                String retrievedTitle = firstElementChild.getAttribute("title");
+
+                // This will get the link to the movie's page that containes several informations among others, the after/during credits scenesà
+                String retrievedHref = firstElementChild.getAttribute("href");
+
+                movie = new Movie();
+
+                if (retrievedTitle != null) {
+                    movie.setTitle(retrievedTitle);
+                }
+
+                if (StringUtils.isNotEmpty(retrievedHref)) {
+                    // TODO process the other page's informations (example http://aftercredits.com/2018/05/deadpool-2-2018/)
+                }
+
+
+            }
+        } catch (IOException e) {
+            // TODO Externalize the source.
             LOGGER.error("Error while fetching data from source.", e);
+
         }
         return Optional.ofNullable(movie);
     }
 
     // TODO move to an utils class ?
-
     /**
      * Removes accents and all the special characters a part of alpha numeric characters, spaces and hyphens.
      *
