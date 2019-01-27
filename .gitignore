@@ -1,8 +1,6 @@
 # Just an experimenting file
 sandbox.html
 
-# Created by https://www.gitignore.io/api/vim,macos,linux,eclipse,windows,notepadpp,intellij+all,visualstudiocode,maven
-
 ### Eclipse ###
 
 .metadata
@@ -253,4 +251,13 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/
 
-# End of https://www.gitignore.io/api/vim,macos,linux,eclipse,windows,notepadpp,intellij+all,visualstudiocode,maven
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
