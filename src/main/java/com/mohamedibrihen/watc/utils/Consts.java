@@ -1,5 +1,6 @@
 package com.mohamedibrihen.watc.utils;
 
+// TODO externalize properties ?
 public final class Consts {
 
     private static final String SEARCH_QUERY_STRING= "?s=";
