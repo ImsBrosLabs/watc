@@ -165,7 +165,7 @@ public class MovieService {
      * Extracts the movie release date from the given string
      * 
      * @param attrValue A string that eventually contains the movie title.
-     * @return
+     * @return The release date.
      */
     public String extractReleaseYear(String attrValue) {
         return StringUtils
