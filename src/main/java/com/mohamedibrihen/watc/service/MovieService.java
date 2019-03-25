@@ -30,7 +30,7 @@ public class MovieService {
         this.client = client;
     }
 
-    public Optional<Movie> getMovie(String title) {
+    public Optional<Movie> getMovie(final String title) {
         Movie movie = null;
 
         // TODO check if the website is online before querying.
@@ -41,10 +41,10 @@ public class MovieService {
 
         try {
 
-            String formatedTitle = formatMovieTitle(title);
+            String formattedTitle = formatMovieTitle(title);
 
             String searchUrl = AFTER_CREDITS_SEARCH_URL_TEMPLATE
-                    + URLEncoder.encode(formatedTitle, String.valueOf(StandardCharsets.UTF_8));
+                    + URLEncoder.encode(formattedTitle, String.valueOf(StandardCharsets.UTF_8));
             HtmlPage page = client.getPage(searchUrl);
 
             List<HtmlElement> elements = page.getByXPath(AFTERCREDITS_SEARCH_XPATH_ELEMENT_QUERY);
@@ -53,65 +53,77 @@ public class MovieService {
             Optional<HtmlElement> domElement = elements.stream()
                     .filter(htmlElement -> compareTitle(
                             htmlElement.getFirstElementChild().getAttribute("title"),
-                            formatedTitle))
+                            formattedTitle))
                     .findFirst();
 
             if (domElement.isPresent()) {
-
-                DomElement firstElementChild = domElement.get().getFirstElementChild();
-
-                // This will get the movie and optionally the year of release.
-                String retrievedTitle = firstElementChild.getAttribute("title");
-
-                // This will get the link to the movie's page that containes several informations
-                // among others, the after/during credits scenesà
-                String retrievedHref = firstElementChild.getAttribute("href");
-
-                movie = new Movie();
-
-                if (retrievedTitle != null) {
-                    movie.setTitle(extractTitle(retrievedTitle));
-                }
-
-                if (StringUtils.isNotEmpty(retrievedHref)) {
-                    // TODO 2 possible ways to get the stringers :
-                    // 1st : get the article id from the shortlink rel ( example "<link
-                    // rel="shortlink" href="http://aftercredits.com/?p=54059">") or from the
-                    // article id which is mayebe a better approach.
-
-                    // 2nd : Some entries don't follow a certain template. I suppose the website
-                    // didn't use any before -> no possible xpath :-( ( like for the movies memento, titanic, fight club...
-                    // (and any other "old" movie ?)). A first approach is to search for "During Credits?" and "After Credits?" with the 
-
-                    // Serenity
-                    // //*[@id="post-54099"]/div[2]/div/div/div[1]/div/div[1]/p[6]/strong/span[2]
-                    // //*[@id="post-54099"]/div[2]/div/div/div[1]/div/div[1]/p[7]/strong/span
-                    
-                    // Glass
-                    //*[@id="post-54059"]/div[2]/div/div/div[1]/div/div[1]/p[6]/strong/span[2]
-                    //*[@id="post-54059"]/div[2]/div/div/div[1]/div/div[1]/p[7]/strong/span
-
-                    // Fight Club
-                    //*[@id="post-22380"]/div[2]/div/div/div[1]/div/div[1]/p[10]/strong
-                    //*[@id="post-22380"]/div[2]/div/div/div[1]/div/div[1]/p[11]/strong
-
-                    // Titanic
-                    //*[@id="post-10772"]/div[2]/div/div/div[1]/div/div[1]/p[10]/strong
-                    //*[@id="post-10772"]/div[2]/div/div/div[1]/div/div[1]/p[11]/strong
-
-                    // Memento
-                    //*[@id="post-6214"]/div[2]/div/div/div[1]/div/div[1]/p[9]/strong
-                    //*[@id="post-6214"]/div[2]/div/div/div[1]/div/div[1]/p[10]/strong
-                }
-
-
+                movie = extractFromDomElement(domElement.get());
             }
+            
         } catch (IOException e) {
             LOGGER.error("Error while fetching data from source.", e);
 
         } catch (FailingHttpStatusCodeException ignored) {
         } // To prevent weird 502 http error (result of FailingHttpStatusCodeException catching)
         return Optional.ofNullable(movie);
+    }
+
+    /**
+     * Extracts movie's information from a given {@link DomElement} object.
+     * 
+     * @param domElement The DOM element from which the information will be extracted.
+     * @return {@link Movie} filled with the extracted information.
+     */
+    private Movie extractFromDomElement(final HtmlElement domElement) {
+        
+        Movie result = null;
+
+        DomElement firstElementChild = domElement.getFirstElementChild();
+
+        // This will get the movie and optionally the year of release.
+        String retrievedTitle = firstElementChild.getAttribute("title");
+
+        // This will get the link to the movie's page that containes several informations
+        // among others, the after/during credits scenesà
+        String retrievedHref = firstElementChild.getAttribute("href");
+
+        
+        if (retrievedTitle != null) {
+            result = new Movie();
+            result.setTitle(extractTitle(retrievedTitle));
+        }
+
+        if (StringUtils.isNotEmpty(retrievedHref)) {
+            // TODO 2 possible ways to get the stringers :
+            // 1st : get the article id from the shortlink rel ( example "<link
+            // rel="shortlink" href="http://aftercredits.com/?p=54059">") or from the
+            // article id which is mayebe a better approach.
+
+            // 2nd : Some entries don't follow a certain template. I suppose the website
+            // didn't use any before -> no possible xpath :-( ( like for the movies memento, titanic, fight club...
+            // (and any other "old" movie ?)). A first approach is to search for "During Credits?" and "After Credits?" with the 
+
+            // Serenity
+            // //*[@id="post-54099"]/div[2]/div/div/div[1]/div/div[1]/p[6]/strong/span[2]
+            // //*[@id="post-54099"]/div[2]/div/div/div[1]/div/div[1]/p[7]/strong/span
+            
+            // Glass
+            //*[@id="post-54059"]/div[2]/div/div/div[1]/div/div[1]/p[6]/strong/span[2]
+            //*[@id="post-54059"]/div[2]/div/div/div[1]/div/div[1]/p[7]/strong/span
+
+            // Fight Club
+            //*[@id="post-22380"]/div[2]/div/div/div[1]/div/div[1]/p[10]/strong
+            //*[@id="post-22380"]/div[2]/div/div/div[1]/div/div[1]/p[11]/strong
+
+            // Titanic
+            //*[@id="post-10772"]/div[2]/div/div/div[1]/div/div[1]/p[10]/strong
+            //*[@id="post-10772"]/div[2]/div/div/div[1]/div/div[1]/p[11]/strong
+
+            // Memento
+            //*[@id="post-6214"]/div[2]/div/div/div[1]/div/div[1]/p[9]/strong
+            //*[@id="post-6214"]/div[2]/div/div/div[1]/div/div[1]/p[10]/strong
+        }
+        return result;
     }
 
     // TODO move to an utils class ?
@@ -157,7 +169,7 @@ public class MovieService {
      * @param attrValue A string that eventually contains the movie title.
      * @return the extracted movie title.
      */
-    public String extractTitle(String attrValue) {
+    public String extractTitle(final String attrValue) {
         return StringUtils.substringBefore(attrValue.toLowerCase(), " (");
     }
 
@@ -167,7 +179,7 @@ public class MovieService {
      * @param attrValue A string that eventually contains the movie title.
      * @return The release date.
      */
-    public String extractReleaseYear(String attrValue) {
+    public String extractReleaseYear(final String attrValue) {
         return StringUtils
                 .substringBefore(StringUtils.substringAfter(attrValue.toLowerCase(), " ("), ")");
     }
