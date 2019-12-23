@@ -1,8 +1,8 @@
-package com.mohamedibrihen.watc.endpoint;
+package com.imslabs.watc.endpoint;
 
-import com.mohamedibrihen.watc.exceptions.MovieNotFoundException;
-import com.mohamedibrihen.watc.model.Movie;
-import com.mohamedibrihen.watc.service.MovieService;
+import com.imslabs.watc.exceptions.MovieNotFoundException;
+import com.imslabs.watc.model.Movie;
+import com.imslabs.watc.service.MovieService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;

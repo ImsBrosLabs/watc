@@ -1,4 +1,4 @@
-package com.mohamedibrihen.watc;
+package com.imslabs.watc;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import org.springframework.boot.SpringApplication;

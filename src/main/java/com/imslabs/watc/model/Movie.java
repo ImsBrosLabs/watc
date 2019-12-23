@@ -1,6 +1,6 @@
-package com.mohamedibrihen.watc.model;
+package com.imslabs.watc.model;
 
-import com.mohamedibrihen.watc.model.enums.Source;
+import com.imslabs.watc.model.enums.Source;
 import lombok.Data;
 
 import java.net.URL;

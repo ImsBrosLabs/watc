@@ -1,4 +1,4 @@
-package com.mohamedibrihen.watc;
+package com.imslabs.watc;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
