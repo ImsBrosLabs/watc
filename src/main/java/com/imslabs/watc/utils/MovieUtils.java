@@ -1,8 +1,8 @@
-package com.mohamedibrihen.watc.utils;
+package com.imslabs.watc.utils;
 
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.mohamedibrihen.watc.model.Movie;
+import com.imslabs.watc.model.Movie;
 import org.apache.commons.lang3.StringUtils;
 
 public class MovieUtils {
