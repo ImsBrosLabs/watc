@@ -1,4 +1,4 @@
-package com.mohamedibrihen.watc.utils;
+package com.imslabs.watc.utils;
 
 // TODO externalize properties ?
 public final class Consts {

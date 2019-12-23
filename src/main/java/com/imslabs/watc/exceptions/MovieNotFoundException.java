@@ -1,4 +1,4 @@
-package com.mohamedibrihen.watc.exceptions;
+package com.imslabs.watc.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

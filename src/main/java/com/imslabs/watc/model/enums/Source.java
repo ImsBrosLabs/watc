@@ -1,4 +1,4 @@
-package com.mohamedibrihen.watc.model.enums;
+package com.imslabs.watc.model.enums;
 
 public enum Source {
 
