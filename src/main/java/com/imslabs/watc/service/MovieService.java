@@ -64,11 +64,11 @@ public class MovieService {
                 String retrievedTitle = firstElementChild.getAttribute("title");
 
                 // This will get the link to the movie's page that containes several informations
-                // among others, the after/during credits scenesà
+                // among others, the after/during credits scenes
                 String retrievedHref = firstElementChild.getAttribute("href");
 
+                // Building the movie object.
                 movie = new Movie();
-
                 if (retrievedTitle != null) {
                     movie.setTitle(extractTitle(retrievedTitle));
                 }
