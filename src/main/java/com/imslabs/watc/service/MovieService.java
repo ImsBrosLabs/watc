@@ -10,11 +10,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
+
 import static com.imslabs.watc.utils.Consts.AFTERCREDITS_SEARCH_XPATH_ELEMENT_QUERY;
 import static com.imslabs.watc.utils.Consts.AFTER_CREDITS_SEARCH_URL_TEMPLATE;
 
@@ -26,7 +28,7 @@ public class MovieService {
 
     private final WebClient client;
 
-    public MovieService(WebClient client) {
+    public MovieService( WebClient client) {
         this.client = client;
     }
 
@@ -77,7 +79,7 @@ public class MovieService {
                     // TODO 2 possible ways to get the stringers :
                     // 1st : get the article id from the shortlink rel ( example "<link
                     // rel="shortlink" href="http://aftercredits.com/?p=54059">") or from the
-                    // article id which is mayebe a better approach.
+                    // article id which is maybe a better approach.
 
                     // 2nd : Some entries don't follow a certain template. I suppose the website
                     // didn't use any before -> no possible xpath :-( ( like for the movies memento, titanic, fight club...

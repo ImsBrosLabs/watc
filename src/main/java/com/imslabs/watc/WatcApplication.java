@@ -7,14 +7,8 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class WatcApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(WatcApplication.class, args);
 	}
 
-	// TODO Move this to a dedicated configuration class.
-	@Bean
-	public WebClient getWebClient() {
-		return new WebClient();
-	}
 }
