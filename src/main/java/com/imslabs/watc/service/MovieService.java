@@ -6,6 +6,7 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.imslabs.watc.model.Movie;
+import com.imslabs.watc.model.enums.Source;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +44,9 @@ public class MovieService {
 
             String searchUrl = AFTER_CREDITS_SEARCH_URL_TEMPLATE
                     + URLEncoder.encode(formatedTitle, String.valueOf(StandardCharsets.UTF_8));
-            HtmlPage page = client.getPage(searchUrl);
+            HtmlPage searchResultsPage = client.getPage(searchUrl);
 
-            List<HtmlElement> elements = page.getByXPath(AFTERCREDITS_SEARCH_XPATH_ELEMENT_QUERY);
+            List<HtmlElement> elements = searchResultsPage.getByXPath(AFTERCREDITS_SEARCH_XPATH_ELEMENT_QUERY);
 
             // element > firstChild > attributs
             Optional<HtmlElement> domElement = elements.stream()
@@ -63,16 +64,20 @@ public class MovieService {
 
                 // This will get the link to the movie's page that containes several informations
                 // among others, the after/during credits scenes
-                String retrievedHref = firstElementChild.getAttribute("href");
+                String moviePageHref = firstElementChild.getAttribute("href");
+
+                HtmlPage moviePage = client.getPage(moviePageHref);
 
                 // Building the movie object.
                 movie = new Movie();
+                movie.setSource(Source.AFTER_CREDITS);
+
                 if (retrievedTitle != null) {
                     movie.setTitle(extractTitle(retrievedTitle));
                     // TODO extract the year too
                 }
 
-                if (StringUtils.isNotEmpty(retrievedHref)) {
+                if (StringUtils.isNotEmpty(moviePageHref)) {
                     // TODO 2 possible ways to get the stringers :
                     // 1st : get the article id from the shortlink rel ( example "<link
                     // rel="shortlink" href="http://aftercredits.com/?p=54059">") or from the
@@ -85,7 +90,6 @@ public class MovieService {
                     // Alternative and generic way of doing : get the element that contains either "During Credits?" / "After Credits?"
                     // (for "old" movies) or "Are There Any Extras During The Credits?" / "Are There Any Extras After The Credits?"
                 }
-
             }
         } catch (IOException e) {
             LOGGER.error("Error while fetching data from source.", e);
