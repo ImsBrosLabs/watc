@@ -14,6 +14,11 @@ public class WatcConfig {
 
         WebClientOptions clientOptions = client.getOptions();
 
+        // Disable JS + CSS for a faster page loading.
+        client.getOptions().setCssEnabled(false);
+        client.getOptions().setJavaScriptEnabled(false);
+
+        // This will prevent the app from failing when having "non distructive" errors like a 520 http error) + ignorring script errors.
         clientOptions.setThrowExceptionOnFailingStatusCode(false);
         clientOptions.setThrowExceptionOnScriptError(false);
 

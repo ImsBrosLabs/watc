@@ -37,10 +37,6 @@ public class MovieService {
 
         // TODO check if the website is online before querying.
 
-        // Disable JS + CSS for a faster page loading.
-        client.getOptions().setCssEnabled(false);
-        client.getOptions().setJavaScriptEnabled(false);
-
         try {
 
             String formatedTitle = formatMovieTitle(title);
@@ -73,6 +69,7 @@ public class MovieService {
                 movie = new Movie();
                 if (retrievedTitle != null) {
                     movie.setTitle(extractTitle(retrievedTitle));
+                    // TODO extract the year too
                 }
 
                 if (StringUtils.isNotEmpty(retrievedHref)) {
