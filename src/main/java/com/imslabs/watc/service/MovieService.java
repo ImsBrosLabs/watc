@@ -6,15 +6,18 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.imslabs.watc.model.Movie;
+import com.imslabs.watc.model.enums.Source;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
+
 import static com.imslabs.watc.utils.Consts.AFTERCREDITS_SEARCH_XPATH_ELEMENT_QUERY;
 import static com.imslabs.watc.utils.Consts.AFTER_CREDITS_SEARCH_URL_TEMPLATE;
 
@@ -26,7 +29,7 @@ public class MovieService {
 
     private final WebClient client;
 
-    public MovieService(WebClient client) {
+    public MovieService( WebClient client) {
         this.client = client;
     }
 
@@ -35,19 +38,15 @@ public class MovieService {
 
         // TODO check if the website is online before querying.
 
-        // Disable JS + CSS for a faster page loading.
-        client.getOptions().setCssEnabled(false);
-        client.getOptions().setJavaScriptEnabled(false);
-
         try {
 
             String formatedTitle = formatMovieTitle(title);
 
             String searchUrl = AFTER_CREDITS_SEARCH_URL_TEMPLATE
                     + URLEncoder.encode(formatedTitle, String.valueOf(StandardCharsets.UTF_8));
-            HtmlPage page = client.getPage(searchUrl);
+            HtmlPage searchResultsPage = client.getPage(searchUrl);
 
-            List<HtmlElement> elements = page.getByXPath(AFTERCREDITS_SEARCH_XPATH_ELEMENT_QUERY);
+            List<HtmlElement> elements = searchResultsPage.getByXPath(AFTERCREDITS_SEARCH_XPATH_ELEMENT_QUERY);
 
             // element > firstChild > attributs
             Optional<HtmlElement> domElement = elements.stream()
@@ -64,20 +63,25 @@ public class MovieService {
                 String retrievedTitle = firstElementChild.getAttribute("title");
 
                 // This will get the link to the movie's page that containes several informations
-                // among others, the after/during credits scenesà
-                String retrievedHref = firstElementChild.getAttribute("href");
+                // among others, the after/during credits scenes
+                String moviePageHref = firstElementChild.getAttribute("href");
 
+                HtmlPage moviePage = client.getPage(moviePageHref);
+
+                // Building the movie object.
                 movie = new Movie();
+                movie.setSource(Source.AFTER_CREDITS);
 
                 if (retrievedTitle != null) {
                     movie.setTitle(extractTitle(retrievedTitle));
+                    // TODO extract the year too
                 }
 
-                if (StringUtils.isNotEmpty(retrievedHref)) {
+                if (StringUtils.isNotEmpty(moviePageHref)) {
                     // TODO 2 possible ways to get the stringers :
                     // 1st : get the article id from the shortlink rel ( example "<link
                     // rel="shortlink" href="http://aftercredits.com/?p=54059">") or from the
-                    // article id which is mayebe a better approach.
+                    // article id which is maybe a better approach.
 
                     // 2nd : Some entries don't follow a certain template. I suppose the website
                     // didn't use any before -> no possible xpath :-( ( like for the movies memento, titanic, fight club...
@@ -86,7 +90,6 @@ public class MovieService {
                     // Alternative and generic way of doing : get the element that contains either "During Credits?" / "After Credits?"
                     // (for "old" movies) or "Are There Any Extras During The Credits?" / "Are There Any Extras After The Credits?"
                 }
-
             }
         } catch (IOException e) {
             LOGGER.error("Error while fetching data from source.", e);
