@@ -46,49 +46,47 @@ public class MovieService {
                     + URLEncoder.encode(formatedTitle, String.valueOf(StandardCharsets.UTF_8));
             HtmlPage searchResultsPage = client.getPage(searchUrl);
 
-            List<HtmlElement> elements = searchResultsPage.getByXPath(AFTERCREDITS_SEARCH_XPATH_ELEMENT_QUERY);
+            List<HtmlElement> moviesElements = searchResultsPage.getByXPath(AFTERCREDITS_SEARCH_XPATH_ELEMENT_QUERY);
 
             // element > firstChild > attributs
-            Optional<HtmlElement> domElement = elements.stream()
+            Optional<HtmlElement> movieElement = moviesElements.stream()
                     .filter(htmlElement -> compareTitle(
                             htmlElement.getFirstElementChild().getAttribute("title"),
                             formatedTitle))
                     .findFirst();
 
-            if (domElement.isPresent()) {
+            if (movieElement.isPresent()) {
 
-                DomElement firstElementChild = domElement.get().getFirstElementChild();
+                DomElement firstElementChild = movieElement.get().getFirstElementChild();
 
                 // This will get the movie and optionally the year of release.
                 String retrievedTitle = firstElementChild.getAttribute("title");
 
                 // This will get the link to the movie's page that containes several informations
                 // among others, the after/during credits scenes
-                String moviePageHref = firstElementChild.getAttribute("href");
-
-                HtmlPage moviePage = client.getPage(moviePageHref);
+                String moviePageUrl = firstElementChild.getAttribute("href");
 
                 // Building the movie object.
                 movie = new Movie();
                 movie.setSource(Source.AFTER_CREDITS);
 
+                // Title
                 if (retrievedTitle != null) {
                     movie.setTitle(extractTitle(retrievedTitle));
                     // TODO extract the year too
                 }
 
-                if (StringUtils.isNotEmpty(moviePageHref)) {
-                    // TODO 2 possible ways to get the stringers :
-                    // 1st : get the article id from the shortlink rel ( example "<link
-                    // rel="shortlink" href="http://aftercredits.com/?p=54059">") or from the
-                    // article id which is maybe a better approach.
 
-                    // 2nd : Some entries don't follow a certain template. I suppose the website
-                    // didn't use any before -> no possible xpath :-( ( like for the movies memento, titanic, fight club...
-                    // (and any other "old" movie ?)). A first approach is to search for "During Credits?" and "After Credits?" with the
+                if (StringUtils.isNotEmpty(moviePageUrl)) {
+                    HtmlPage moviePage = client.getPage(moviePageUrl);
 
-                    // Alternative and generic way of doing : get the element that contains either "During Credits?" / "After Credits?"
-                    // (for "old" movies) or "Are There Any Extras During The Credits?" / "Are There Any Extras After The Credits?"
+                    // Getting the during credit extra
+                    List<HtmlElement> duringCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'During Credits?')]");
+                    if (duringCreditElementResults.isEmpty()) {
+                        duringCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'Are There Any Extras During The Credits?')]");
+                    }
+
+
                 }
             }
         } catch (IOException e) {
