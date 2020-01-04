@@ -67,6 +67,7 @@ public class MovieService {
                 String moviePageUrl = firstElementChild.getAttribute("href");
 
                 // Building the movie object.
+                // TODO Factory pattern with two concrete classes (oldTemplate, newTemplate)
                 movie = new Movie();
                 movie.setSource(Source.AFTER_CREDITS);
 
@@ -76,13 +77,14 @@ public class MovieService {
                     // TODO extract the year too
                 }
 
-
                 if (StringUtils.isNotEmpty(moviePageUrl)) {
                     HtmlPage moviePage = client.getPage(moviePageUrl);
 
                     // Getting the during credit extra
+                    // "old template"
                     List<HtmlElement> duringCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'During Credits?')]");
                     if (duringCreditElementResults.isEmpty()) {
+                        // "new template"
                         duringCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'Are There Any Extras During The Credits?')]");
                     }
 
