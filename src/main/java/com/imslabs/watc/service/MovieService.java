@@ -67,6 +67,7 @@ public class MovieService {
                 String moviePageUrl = firstElementChild.getAttribute("href");
 
                 // Building the movie object.
+                // TODO Factory pattern with two concrete classes (LatestTemplateMovie, OldTemplateMovie) the factory class will create either one or another depending on the template type
                 movie = new Movie();
                 movie.setSource(Source.AFTER_CREDITS);
 
@@ -76,16 +77,29 @@ public class MovieService {
                     // TODO extract the year too
                 }
 
-
                 if (StringUtils.isNotEmpty(moviePageUrl)) {
                     HtmlPage moviePage = client.getPage(moviePageUrl);
 
                     // Getting the during credit extra
-                    List<HtmlElement> duringCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'During Credits?')]");
+                    // "old template"
+                    List<HtmlElement> duringCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'During Credits?')]/*[1]");
                     if (duringCreditElementResults.isEmpty()) {
-                        duringCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'Are There Any Extras During The Credits?')]");
+                        // "new template"
+                        duringCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'Are There Any Extras During The Credits?')]/*[1]");
+                     }
+
+                    HtmlElement duringCreditElementResult = duringCreditElementResults.get(0);
+                    movie.setHasExtrasDuringCredits(!StringUtils.equals(StringUtils.lowerCase(duringCreditElementResult.getTextContent()), "no"));
+
+                    // "old tempalte"
+                    List<HtmlElement> afterCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'After Credits?')]/*[1]\"");
+                    if (afterCreditElementResults.isEmpty()) {
+                        // "new template"
+                        afterCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'Are There Any Extras After The Credits?')]/*[1]\"");
                     }
 
+                    HtmlElement afterCreditElementResult = afterCreditElementResults.get(0);
+                    movie.setHasExtraAfterCredits(!StringUtils.equals(StringUtils.lowerCase(afterCreditElementResult.getTextContent()), "no"));
 
                 }
             }
