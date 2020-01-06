@@ -91,11 +91,12 @@ public class MovieService {
                     HtmlElement duringCreditElementResult = duringCreditElementResults.get(0);
                     movie.setHasExtrasDuringCredits(!StringUtils.equals(StringUtils.lowerCase(duringCreditElementResult.getTextContent()), "no"));
 
+                    // Getting the after credit extra
                     // "old tempalte"
-                    List<HtmlElement> afterCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'After Credits?')]/*[1]\"");
+                    List<HtmlElement> afterCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'After Credits?')]/*[1]");
                     if (afterCreditElementResults.isEmpty()) {
                         // "new template"
-                        afterCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'Are There Any Extras After The Credits?')]/*[1]\"");
+                        afterCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'Are There Any Extras After The Credits?')]/*[1]");
                     }
 
                     HtmlElement afterCreditElementResult = afterCreditElementResults.get(0);
