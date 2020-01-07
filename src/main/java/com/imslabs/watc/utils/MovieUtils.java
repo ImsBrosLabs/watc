@@ -121,4 +121,19 @@ public class MovieUtils {
         }
         return result;
     }
+
+    /**
+     * Builds an insensitive Xpath "contains" query (operates on the entire body of the page.).
+     *
+     * @param needle The text to search.
+     * @return The full Xpath query.
+     */
+    public static String buildInsensitiveContainsQuery(String needle) {
+        return  "/html/body//text()[" +
+                "  contains(" +
+                "    translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')," +
+                "    '" + StringUtils.lowerCase(needle) + "'" +
+                "  )" +
+                "]";
+    }
 }
