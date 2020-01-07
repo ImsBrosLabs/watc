@@ -7,6 +7,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.imslabs.watc.model.Movie;
 import com.imslabs.watc.model.enums.Source;
+import com.imslabs.watc.utils.Consts;
+import com.imslabs.watc.utils.MovieUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
-import static com.imslabs.watc.utils.Consts.AFTERCREDITS_SEARCH_XPATH_ELEMENT_QUERY;
-import static com.imslabs.watc.utils.Consts.AFTER_CREDITS_SEARCH_URL_TEMPLATE;
+import static com.imslabs.watc.utils.Consts.*;
 
 // TODO LOGGING
 @Service
@@ -62,12 +63,11 @@ public class MovieService {
                 // This will get the movie and optionally the year of release.
                 String retrievedTitle = firstElementChild.getAttribute("title");
 
-                // This will get the link to the movie's page that containes several informations
+                // This will get the link to the movie's page that contains several information
                 // among others, the after/during credits scenes
                 String moviePageUrl = firstElementChild.getAttribute("href");
 
                 // Building the movie object.
-                // TODO Factory pattern with two concrete classes (LatestTemplateMovie, OldTemplateMovie) the factory class will create either one or another depending on the template type
                 movie = new Movie();
                 movie.setSource(Source.AFTER_CREDITS);
 
@@ -80,12 +80,17 @@ public class MovieService {
                 if (StringUtils.isNotEmpty(moviePageUrl)) {
                     HtmlPage moviePage = client.getPage(moviePageUrl);
 
+                    if (isLatestTemplate(moviePage)) {
+
+                    } else {
+
+                    }
                     // Getting the during credit extra
                     // "old template"
-                    List<HtmlElement> duringCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'During Credits?')]/*[1]");
+                    List<HtmlElement> duringCreditElementResults = moviePage.getByXPath(Consts.OLD_TEMPLATE_EXTRAS_DURING_CREDIT_QUERY);
                     if (duringCreditElementResults.isEmpty()) {
                         // "new template"
-                        duringCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'Are There Any Extras During The Credits?')]/*[1]");
+                        duringCreditElementResults = moviePage.getByXPath(NEW_TEMPLATE_EXTRAS_DURING_CREDIT_QUERY);
                      }
 
                     HtmlElement duringCreditElementResult = duringCreditElementResults.get(0);
@@ -93,10 +98,10 @@ public class MovieService {
 
                     // Getting the after credit extra
                     // "old tempalte"
-                    List<HtmlElement> afterCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'After Credits?')]/*[1]");
+                    List<HtmlElement> afterCreditElementResults = moviePage.getByXPath(OLD_TEMPLATE_EXTRAS_AFTER_CREDIT_QUERY);
                     if (afterCreditElementResults.isEmpty()) {
                         // "new template"
-                        afterCreditElementResults = moviePage.getByXPath("//*[contains(text(), 'Are There Any Extras After The Credits?')]/*[1]");
+                        afterCreditElementResults = moviePage.getByXPath(NEW_TEMPLATE_EXTRAS_AFTER_CREDIT_QUERY);
                     }
 
                     HtmlElement afterCreditElementResult = afterCreditElementResults.get(0);
@@ -168,5 +173,18 @@ public class MovieService {
     public String extractReleaseYear(String attrValue) {
         return StringUtils
                 .substringBefore(StringUtils.substringAfter(attrValue.toLowerCase(), " ("), ")");
+    }
+
+    /**
+     * Checks if the movie page template is the latest.
+     *
+     * @param moviePage The html movie page object.
+     * @return True if it's the latest template false if it's the old one.
+     */
+    public boolean isLatestTemplate(HtmlPage moviePage) {
+        return !moviePage
+                .getByXPath(
+                        MovieUtils.buildInsensitiveContainsQuery(Consts.NEW_TEMPLATE_DURING_CREDITS_TEXT))
+                .isEmpty();
     }
 }
