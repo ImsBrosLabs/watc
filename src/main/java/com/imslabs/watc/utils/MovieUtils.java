@@ -123,13 +123,34 @@ public class MovieUtils {
     }
 
     /**
-     * Builds an insensitive Xpath "contains" query (operates on the entire body of the page.).
+     * Builds an insensitive Xpath "contains" query (operates on the entire body of the page.) for the recent template.
      *
      * @param needle The text to search.
      * @return The full Xpath query.
      */
-    public static String buildInsensitiveContainsQuery(String needle) {
-        return  "/html/body//text()[" +
+    public static String buildContainsQueryNew(String needle) {
+        return buildContainsQuery(needle, true);
+    }
+
+    /**
+     * Builds an insensitive Xpath "contains" query (operates on the entire body of the page.) for the old template.
+     *
+     * @param needle The text to search.
+     * @return The full Xpath query.
+     */
+    public static String buildContainsQueryOld(String needle) {
+        return buildContainsQuery(needle, false);
+    }
+
+    /**
+     * Builds an insensitive Xpath "contains" query (operates on the entire body of the page.).
+     *
+     * @param needle The text to search.
+     * @param isNew  Set to true for the latest template and false for the old one.
+     * @return The full Xpath query.
+     */
+    private static String buildContainsQuery(String needle, boolean isNew) {
+        return "//" + (isNew ? "span" : "p") + "[" +
                 "  contains(" +
                 "    translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')," +
                 "    '" + StringUtils.lowerCase(needle) + "'" +

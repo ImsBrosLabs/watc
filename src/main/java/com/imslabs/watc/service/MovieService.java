@@ -184,7 +184,7 @@ public class MovieService {
     public boolean isLatestTemplate(HtmlPage moviePage) {
         return !moviePage
                 .getByXPath(
-                        MovieUtils.buildInsensitiveContainsQuery(Consts.NEW_TEMPLATE_DURING_CREDITS_TEXT))
+                        MovieUtils.buildContainsQueryNew(Consts.NEW_TEMPLATE_DURING_CREDITS_TEXT))
                 .isEmpty();
     }
 }
