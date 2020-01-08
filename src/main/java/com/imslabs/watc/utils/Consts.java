@@ -19,13 +19,13 @@ public final class Consts {
     public static final String OLD_TEMPLATE_AFTER_CREDITS_TEXT = "After Credits?";
 
     // Movie information queries
-    public static final String TITLE_QUERY = MovieUtils.buildInsensitiveContainsQuery(TITLE_TEXT) + GET_FIRST_CHILD_SUB_QUERY;
-    public static final String RELEASE_DATE_QUERY = MovieUtils.buildInsensitiveContainsQuery(RELEASE_DATE_TEXT) + GET_FIRST_CHILD_SUB_QUERY;
-    public static final String NEW_TEMPLATE_EXTRAS_DURING_CREDIT_QUERY = MovieUtils.buildInsensitiveContainsQuery(NEW_TEMPLATE_DURING_CREDITS_TEXT) + GET_FIRST_CHILD_SUB_QUERY;
-    public static final String OLD_TEMPLATE_EXTRAS_DURING_CREDIT_QUERY = MovieUtils.buildInsensitiveContainsQuery(OLD_TEMPLATE_DURING_CREDITS_TEXT) + GET_FIRST_CHILD_SUB_QUERY;
+    public static final String TITLE_QUERY = MovieUtils.buildContainsQuery(TITLE_TEXT) + GET_FIRST_CHILD_SUB_QUERY;
+    public static final String RELEASE_DATE_QUERY = MovieUtils.buildContainsQuery(RELEASE_DATE_TEXT) + GET_FIRST_CHILD_SUB_QUERY;
+    public static final String NEW_TEMPLATE_EXTRAS_DURING_CREDIT_QUERY = MovieUtils.buildContainsQuery(NEW_TEMPLATE_DURING_CREDITS_TEXT) + GET_FIRST_CHILD_SUB_QUERY;
+    public static final String OLD_TEMPLATE_EXTRAS_DURING_CREDIT_QUERY = "//*[contains(text(), 'During Credits?')]/*[1]";
 
-    public static final String NEW_TEMPLATE_EXTRAS_AFTER_CREDIT_QUERY = MovieUtils.buildInsensitiveContainsQuery(NEW_TEMPLATE_AFTER_CREDITS_TEXT) + GET_FIRST_CHILD_SUB_QUERY;
-    public static final String OLD_TEMPLATE_EXTRAS_AFTER_CREDIT_QUERY = MovieUtils.buildInsensitiveContainsQuery(OLD_TEMPLATE_AFTER_CREDITS_TEXT) + GET_FIRST_CHILD_SUB_QUERY;
+    public static final String NEW_TEMPLATE_EXTRAS_AFTER_CREDIT_QUERY = "//*[contains(text(), 'Are There Any Extras After The Credits?')]/*[1]";
+    public static final String OLD_TEMPLATE_EXTRAS_AFTER_CREDIT_QUERY = "//*[contains(text(), 'After Credits?')]/*[1]";
 
 
 
