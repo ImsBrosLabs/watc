@@ -55,15 +55,6 @@ public class MovieServiceTest {
         assertThat(result).isEqualTo(LION_TITLE);
         
     }
-
-    @Test
-    public void extractReleaseDateTest() {
-        String attrValue = "Fight Club (1999)*";
-
-        String result = movieService.extractReleaseYear(attrValue);
-
-        assertThat(result).isEqualTo("1999");
-    }
     
     /* PRIVATE METHODS */
     private void doformatMovieTitleAssertion(String actualTitle, String expectedTitle) {
