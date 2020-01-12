@@ -7,8 +7,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.imslabs.watc.model.Movie;
 import com.imslabs.watc.model.enums.Source;
-import com.imslabs.watc.utils.Consts;
-import com.imslabs.watc.utils.MovieUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +18,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 
-import static com.imslabs.watc.utils.Consts.*;
+import static com.imslabs.watc.utils.Consts.AFTERCREDITS_SEARCH_XPATH_ELEMENT_QUERY;
+import static com.imslabs.watc.utils.Consts.AFTER_CREDITS_SEARCH_URL_TEMPLATE;
 
 // TODO LOGGING
 @Service
@@ -63,49 +62,29 @@ public class MovieService {
                 // This will get the movie and optionally the year of release.
                 String retrievedTitle = firstElementChild.getAttribute("title");
 
-                // This will get the link to the movie's page that contains several information
+                // This will get the link to the movie's page that containes several informations
                 // among others, the after/during credits scenes
                 String moviePageUrl = firstElementChild.getAttribute("href");
 
                 // Building the movie object.
                 movie = new Movie();
-                movie.setSource(Source.AFTER_CREDITS);
-
-                // Title
-                if (retrievedTitle != null) {
-                    movie.setTitle(extractTitle(retrievedTitle));
-                    // TODO extract the year too
-                }
+                movie.setSource(Source.AFTER_CREDITS); // Forced in this first version of the API
 
                 if (StringUtils.isNotEmpty(moviePageUrl)) {
                     HtmlPage moviePage = client.getPage(moviePageUrl);
 
-                    if (isLatestTemplate(moviePage)) {
+
+                    List<HtmlElement> movieInformationElement = moviePage.getByXPath("//span[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'title:')]");
+                    if (!movieInformationElement.isEmpty()) {
+                        // newer movie info template (retrieving all the movie info here)
+                        String movieInformationStr = movieInformationElement.get(0).getTextContent();
 
                     } else {
+                        // Old template (retrieve the elements one by one)
+                        List<HtmlElement> titleElement = moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'title:')]");
 
                     }
-                    // Getting the during credit extra
-                    // "old template"
-                    List<HtmlElement> duringCreditElementResults = moviePage.getByXPath(Consts.OLD_TEMPLATE_EXTRAS_DURING_CREDIT_QUERY);
-                    if (duringCreditElementResults.isEmpty()) {
-                        // "new template"
-                        duringCreditElementResults = moviePage.getByXPath(NEW_TEMPLATE_EXTRAS_DURING_CREDIT_QUERY);
-                     }
 
-                    HtmlElement duringCreditElementResult = duringCreditElementResults.get(0);
-                    movie.setHasExtrasDuringCredits(!StringUtils.equals(StringUtils.lowerCase(duringCreditElementResult.getTextContent()), "no"));
-
-                    // Getting the after credit extra
-                    // "old tempalte"
-                    List<HtmlElement> afterCreditElementResults = moviePage.getByXPath(OLD_TEMPLATE_EXTRAS_AFTER_CREDIT_QUERY);
-                    if (afterCreditElementResults.isEmpty()) {
-                        // "new template"
-                        afterCreditElementResults = moviePage.getByXPath(NEW_TEMPLATE_EXTRAS_AFTER_CREDIT_QUERY);
-                    }
-
-                    HtmlElement afterCreditElementResult = afterCreditElementResults.get(0);
-                    movie.setHasExtraAfterCredits(!StringUtils.equals(StringUtils.lowerCase(afterCreditElementResult.getTextContent()), "no"));
 
                 }
             }
@@ -162,29 +141,5 @@ public class MovieService {
      */
     public String extractTitle(String attrValue) {
         return StringUtils.substringBefore(attrValue.toLowerCase(), " (");
-    }
-
-    /**
-     * Extracts the movie release date from the given string
-     * 
-     * @param attrValue A string that eventually contains the movie title.
-     * @return
-     */
-    public String extractReleaseYear(String attrValue) {
-        return StringUtils
-                .substringBefore(StringUtils.substringAfter(attrValue.toLowerCase(), " ("), ")");
-    }
-
-    /**
-     * Checks if the movie page template is the latest.
-     *
-     * @param moviePage The html movie page object.
-     * @return True if it's the latest template false if it's the old one.
-     */
-    public boolean isLatestTemplate(HtmlPage moviePage) {
-        return !moviePage
-                .getByXPath(
-                        MovieUtils.buildContainsQueryNew(Consts.NEW_TEMPLATE_DURING_CREDITS_TEXT))
-                .isEmpty();
     }
 }
