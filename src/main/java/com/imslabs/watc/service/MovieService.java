@@ -7,6 +7,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.imslabs.watc.model.Movie;
 import com.imslabs.watc.model.enums.Source;
+import com.imslabs.watc.utils.MovieUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,7 @@ public class MovieService {
 
             // element > firstChild > attributs
             Optional<HtmlElement> movieElement = moviesElements.stream()
-                    .filter(htmlElement -> compareTitle(
+                    .filter(htmlElement -> MovieUtils.compareTitle(
                             htmlElement.getFirstElementChild().getAttribute("title"),
                             formatedTitle))
                     .findFirst();
@@ -79,9 +80,11 @@ public class MovieService {
                         // newer movie info template (retrieving all the movie info here)
                         String movieInformationStr = movieInformationElement.get(0).getTextContent();
 
+
                     } else {
                         // Old template (retrieve the elements one by one)
-                        List<HtmlElement> titleElement = moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'title:')]");
+                        HtmlElement titleElement = (HtmlElement) moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'title:')]").get(0);
+                        movie.setTitle(MovieUtils.extractTitleOld(titleElement.getTextContent()));
 
                     }
 
@@ -110,36 +113,4 @@ public class MovieService {
                 : title;
     }
 
-    /**
-     * <p>
-     * Compares the attribute with the preformated user input.
-     * <p>
-     * Example :
-     * <code>@code{<a href="http://aftercredits.com/2014/05/godzilla-2014/" rel="bookmark" title=
-     * "Godzilla (2014)">Godzilla (2014)</a>}</code>
-     * <p>
-     * This funtion will compare the title attribute value "Godzilla (2014)" with the user input
-     * let's say "godzilla" (returns true in this case).
-     *
-     * @param userInput user input.
-     * @param attrValue The title attribute value.
-     * @return True if the two titles match, false instead.
-     */
-    public boolean compareTitle(final String attrValue, final String userInput) {
-
-        // Substracting the title from the attribute value.
-        String subTitle = StringUtils.substringBefore(attrValue.toLowerCase(), " (");
-
-        return StringUtils.equals(subTitle, userInput.toLowerCase());
-    }
-
-    /**
-     * Extracts the movie title from the given string.
-     * 
-     * @param attrValue A string that eventually contains the movie title.
-     * @return the extracted movie title.
-     */
-    public String extractTitle(String attrValue) {
-        return StringUtils.substringBefore(attrValue.toLowerCase(), " (");
-    }
 }

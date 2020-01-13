@@ -5,8 +5,10 @@ import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.imslabs.watc.model.Movie;
 import org.apache.commons.lang3.StringUtils;
 
+import java.rmi.UnexpectedException;
+
 public class MovieUtils {
-    
+
     /**
      * Removes accents and all the special characters a part of alpha numeric characters, spaces and
      * hyphens.
@@ -14,7 +16,7 @@ public class MovieUtils {
      * @param title The user entry.
      * @return The formatted title.
      */
-    public static String formatMovieTitle(final String title) {
+    public static String formatUserInput(final String title) {
         return StringUtils.isNotBlank(title)
                 ? StringUtils.stripAccents(title).replaceAll("[^a-zA-Z0-9 -]", "")
                 : title;
@@ -44,13 +46,37 @@ public class MovieUtils {
     }
 
     /**
-     * Extracts the movie title from the given string.
-     * 
-     * @param attrValue A string that eventually contains the movie title.
-     * @return the extracted movie title.
+     * Extracts title from the newer template text containing it.
+     * @param stack The text containing the title.
+     * @return The title.
      */
-    public static String extractTitle(final String attrValue) {
-        return StringUtils.substringBefore(attrValue.toLowerCase(), " (");
+    public static String extractTitleNew(String stack) {
+        return extractTitle(stack, true);
     }
 
+    /**
+     * Extracts title from the older template text containing it.
+     * @param stack The text containing the title.
+     * @return The title.
+     */
+    public static String extractTitleOld(String stack) {
+        return extractTitle(stack, false);
+    }
+
+    /**
+     * Extracts title from the given template text containing it.
+     *
+     * @param stack          The text containing the title.
+     * @param latestTemplate True if the movie's template is new, false otherwise.
+     * @return The title.
+     */
+    private static String extractTitle(String stack, boolean latestTemplate) {
+        if (latestTemplate) {
+            // FIXME Implement
+            return null;
+        } else {
+            // The non extracted title is usually something like "TITLE: Memento"
+            return StringUtils.substringAfter(stack, ":");
+        }
+    }
 }
