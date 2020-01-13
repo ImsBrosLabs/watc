@@ -2,6 +2,7 @@ package com.imslabs.watc.services;
 
 import com.imslabs.watc.WatcApplication;
 import com.imslabs.watc.service.MovieService;
+import com.imslabs.watc.utils.MovieUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,23 +38,14 @@ public class MovieServiceTest {
     public void compareTitleTest() {
         String attrValue = "Deadpool (2016)*";
 
-        assertThat(movieService.compareTitle(attrValue, DEADPOOL_TITLE)).isTrue();
+        assertThat(MovieUtils.compareTitle(attrValue, DEADPOOL_TITLE)).isTrue();
 
         attrValue = "Fight Club (1999)";
-        assertThat(movieService.compareTitle(attrValue, FIGHT_CLUB_TITLE)).isTrue();
+        assertThat(MovieUtils.compareTitle(attrValue, FIGHT_CLUB_TITLE)).isTrue();
 
         attrValue = "carnaval fi dachra";
-        assertThat(movieService.compareTitle(attrValue, CARNAVAL_FI_DACHRA_TITLE)).isTrue();
+        assertThat(MovieUtils.compareTitle(attrValue, CARNAVAL_FI_DACHRA_TITLE)).isTrue();
 
-    }
-
-    @Test
-    public void extractTitleTest() {
-        String attrValue = "Lion (2016)*";
-
-        String result = movieService.extractTitle(attrValue);
-        assertThat(result).isEqualTo(LION_TITLE);
-        
     }
     
     /* PRIVATE METHODS */
