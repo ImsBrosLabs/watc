@@ -79,13 +79,12 @@ public class MovieService {
                     if (!movieInformationElement.isEmpty()) {
                         // newer movie info template (retrieving all the movie info here)
                         String movieInformationStr = movieInformationElement.get(0).getTextContent();
-
+                        movie.setTitle(MovieUtils.extractTitleNew(movieInformationStr));
 
                     } else {
                         // Old template (retrieve the elements one by one)
                         HtmlElement titleElement = (HtmlElement) moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'title:')]").get(0);
                         movie.setTitle(MovieUtils.extractTitleOld(titleElement.getTextContent()));
-
                     }
 
 

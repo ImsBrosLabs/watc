@@ -3,9 +3,10 @@ package com.imslabs.watc.utils;
 // TODO externalize properties ?
 public final class Consts {
 
-    private static final String SEARCH_QUERY_STRING= "?s=";
+    public static final String SEARCH_QUERY_STRING= "?s=";
+    public static final String AFTER_CREDITS_URL = "http://aftercredits.com/";
     public static final String GET_FIRST_CHILD_SUB_QUERY = "/*[1]";
-    private static final String AFTER_CREDITS_URL = "http://aftercredits.com/";
+    public static final String STRIPPED_CHARS = " \t\u00A0\u1680\u180e\u2000\u200a\u202f\u205f\u3000";
 
     public static final String AFTER_CREDITS_SEARCH_URL_TEMPLATE = AFTER_CREDITS_URL + SEARCH_QUERY_STRING;
 
