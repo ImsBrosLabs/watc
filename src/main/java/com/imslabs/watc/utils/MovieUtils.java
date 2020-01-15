@@ -71,12 +71,8 @@ public class MovieUtils {
      * @return The title.
      */
     private static String extractTitle(String stack, boolean latestTemplate) {
-        if (latestTemplate) {
-            // FIXME Implement
-            return null;
-        } else {
-            // The non extracted title is usually something like "TITLE: Memento"
-            return StringUtils.substringAfter(stack, ":");
-        }
+        return latestTemplate ?
+                StringUtils.strip(StringUtils.substringBetween(stack, "Title:", "\n"), Consts.STRIPPED_CHARS) :
+                StringUtils.strip(StringUtils.substringAfter(stack, ":"), Consts.STRIPPED_CHARS);
     }
 }
