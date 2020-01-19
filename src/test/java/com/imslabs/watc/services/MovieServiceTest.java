@@ -24,8 +24,8 @@ public class MovieServiceTest {
     private static final String TBTGTU_TITLE = "the bad the good and the ugly";
     private static final String CARNAVAL_FI_DACHRA_TITLE = "carnaval fi dachra";
     private static final String LION_TITLE = "lion";
-    private static final String LATEST_TEMPLATE_TEXT = "Title: Deadpool 2\nRating: R\nDirected by: David Leitch\nWritten by: Rhett Reese, Paul Wernick, and Ryan Reynolds\nStarring: Ryan Reynolds, Josh Brolin, Morena Baccarin, Julian Dennison, Zazie Beetz, T.J. Miller, Brianna Hildebrand, and Jack Kesy\nRelease Date: 5/18/2018\nRunning Time: 119 minutes";
-    private static final String OLD_TEMPLATE_TITLETEXT = "";
+    private static final String NEW_TEMPLATE_TEXT = "Title: Deadpool 2\nRating: R\nDirected by: David Leitch\nWritten by: Rhett Reese, Paul Wernick, and Ryan Reynolds\nStarring: Ryan Reynolds, Josh Brolin, Morena Baccarin, Julian Dennison, Zazie Beetz, T.J. Miller, Brianna Hildebrand, and Jack Kesy\nRelease Date: 5/18/2018\nRunning Time: 119 minutes";
+    private static final String OLD_TEMPLATE_TITLE_TEXT = "TITLE: Memento";
 
 
     @Test
@@ -51,13 +51,18 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void extractTitleTest() {
-        assertThat(MovieUtils.extractTitleNew(LATEST_TEMPLATE_TEXT)).isEqualToIgnoringCase("deadpool 2");
+    public void extractTitleNewTest() {
+        assertThat(MovieUtils.extractTitleNew(NEW_TEMPLATE_TEXT)).isEqualToIgnoringCase("deadpool 2");
+    }
+
+    @Test
+    public void extractTitleOldTest() {
+        assertThat(MovieUtils.extractTitleOld(OLD_TEMPLATE_TITLE_TEXT)).isEqualTo("Memento");
     }
 
     /* PRIVATE METHODS */
     private void doformatMovieTitleAssertion(String actualTitle, String expectedTitle) {
-        String result = movieService.formatMovieTitle(actualTitle);
+        String result = MovieUtils.formatMovieTitle(actualTitle);
         assertThat(result).isEqualTo(expectedTitle);
     }
 }

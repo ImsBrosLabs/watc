@@ -41,7 +41,7 @@ public class MovieService {
 
         try {
 
-            String formatedTitle = formatMovieTitle(title);
+            String formatedTitle = MovieUtils.formatMovieTitle(title);
 
             String searchUrl = AFTER_CREDITS_SEARCH_URL_TEMPLATE
                     + URLEncoder.encode(formatedTitle, String.valueOf(StandardCharsets.UTF_8));
@@ -59,9 +59,6 @@ public class MovieService {
             if (movieElement.isPresent()) {
 
                 DomElement firstElementChild = movieElement.get().getFirstElementChild();
-
-                // This will get the movie and optionally the year of release.
-                String retrievedTitle = firstElementChild.getAttribute("title");
 
                 // This will get the link to the movie's page that containes several informations
                 // among others, the after/during credits scenes
@@ -97,19 +94,4 @@ public class MovieService {
         } // To prevent weird 502 http error (result of FailingHttpStatusCodeException catching)
         return Optional.ofNullable(movie);
     }
-
-    // TODO move to an utils class ?
-    /**
-     * Removes accents and all the special characters a part of alpha numeric characters, spaces and
-     * hyphens.
-     *
-     * @param title The user entry.
-     * @return The formatted title.
-     */
-    public String formatMovieTitle(final String title) {
-        return StringUtils.isNotBlank(title)
-                ? StringUtils.stripAccents(title).replaceAll("[^a-zA-Z0-9 -]", "")
-                : title;
-    }
-
 }

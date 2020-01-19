@@ -47,32 +47,56 @@ public class MovieUtils {
 
     /**
      * Extracts title from the newer template text containing it.
-     * @param stack The text containing the title.
+     * @param hayStack The text containing the title.
      * @return The title.
      */
-    public static String extractTitleNew(String stack) {
-        return extractTitle(stack, true);
+    public static String extractTitleNew(String hayStack) {
+        return extractTitle(hayStack, true);
     }
 
     /**
      * Extracts title from the older template text containing it.
-     * @param stack The text containing the title.
+     * @param hayStack The text containing the title.
      * @return The title.
      */
-    public static String extractTitleOld(String stack) {
-        return extractTitle(stack, false);
+    public static String extractTitleOld(String hayStack) {
+        return extractTitle(hayStack, false);
+    }
+
+    /**
+     * Removes accents and all the special characters a part of alpha numeric characters, spaces and
+     * hyphens.
+     *
+     * @param title The user entry.
+     * @return The formatted title.
+     */
+    public static String formatMovieTitle(final String title) {
+        return StringUtils.isNotBlank(title)
+                ? StringUtils.stripAccents(title).replaceAll("[^a-zA-Z0-9 -]", "")
+                : title;
     }
 
     /**
      * Extracts title from the given template text containing it.
      *
-     * @param stack          The text containing the title.
+     * @param hayStack          The text containing the title.
      * @param latestTemplate True if the movie's template is new, false otherwise.
      * @return The title.
      */
-    private static String extractTitle(String stack, boolean latestTemplate) {
-        return latestTemplate ?
-                StringUtils.strip(StringUtils.substringBetween(stack, "Title:", "\n"), Consts.STRIPPED_CHARS) :
-                StringUtils.strip(StringUtils.substringAfter(stack, ":"), Consts.STRIPPED_CHARS);
+    private static String extractTitle(String hayStack, boolean latestTemplate) {
+        return extractField(hayStack, latestTemplate ? "Title:" : "TITLE:", latestTemplate);
+    }
+
+    /**
+     * A more generic method that extract a field by its label (title, release date, starring,...).
+     *
+     * @param hayStack          The text containing the field.
+     * @param label          the label of the fue.
+     * @param latestTemplate True if the movie's template is new, false otherwise.
+     * @return The field's value.
+     */
+    private static String extractField(String hayStack, String label, boolean latestTemplate) {
+        return latestTemplate ? StringUtils.strip(StringUtils.substringBetween(hayStack, label, "\n"), Consts.STRIPPED_CHARS) :
+                StringUtils.strip(StringUtils.substringAfter(hayStack, label), Consts.STRIPPED_CHARS);
     }
 }
