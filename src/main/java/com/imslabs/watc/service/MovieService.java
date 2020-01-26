@@ -77,11 +77,15 @@ public class MovieService {
                         // newer movie info template (retrieving all the movie info here)
                         String movieInformationStr = movieInformationElement.get(0).getTextContent();
                         movie.setTitle(MovieUtils.extractTitleNew(movieInformationStr));
+                        movie.setReleaseDate(MovieUtils.extractReleaseDateNew(movieInformationStr));
 
                     } else {
                         // Old template (retrieve the elements one by one)
                         HtmlElement titleElement = (HtmlElement) moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'title:')]").get(0);
                         movie.setTitle(MovieUtils.extractTitleOld(titleElement.getTextContent()));
+
+                        HtmlElement releaseDateElement = (HtmlElement) moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'release date:')]").get(0);
+                        movie.setReleaseDate(MovieUtils.extractReleaseDateOld(releaseDateElement.getTextContent()));
                     }
 
 
