@@ -1,11 +1,10 @@
 package com.imslabs.watc.utils;
 
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.imslabs.watc.model.Movie;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
-import java.rmi.UnexpectedException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class MovieUtils {
 
@@ -64,6 +63,24 @@ public class MovieUtils {
     }
 
     /**
+     * Extracts the release date from the newer template text containing it.
+     * @param hayStack The text containing the title.
+     * @return The release date.
+     */
+    public static LocalDate extractReleaseDateNew(String hayStack) {
+        return extractReleaseDate(hayStack, true);
+    }
+
+    /**
+     * Extracts the release date from the older template text containing it.
+     * @param hayStack The text containing the title.
+     * @return The release date.
+     */
+    public static LocalDate extractReleaseDateOld(String hayStack) {
+        return extractReleaseDate(hayStack, false);
+    }
+
+    /**
      * Removes accents and all the special characters a part of alpha numeric characters, spaces and
      * hyphens.
      *
@@ -76,6 +93,8 @@ public class MovieUtils {
                 : title;
     }
 
+    /* PRIVATE METHODS */
+
     /**
      * Extracts title from the given template text containing it.
      *
@@ -85,6 +104,20 @@ public class MovieUtils {
      */
     private static String extractTitle(String hayStack, boolean latestTemplate) {
         return extractField(hayStack, latestTemplate ? "Title:" : "TITLE:", latestTemplate);
+    }
+
+    /**
+     * Extracts the release date from the given template text containing it.
+     *
+     * @param hayStack The text containing the title.
+     * @param latestTemplate True if the movie's template is new, false otherwise.
+     * @return The release date of the movie.
+     */
+    private static LocalDate extractReleaseDate(String hayStack, boolean latestTemplate) {
+        String releaseDateInString = extractField(hayStack, latestTemplate ? "Release Date:" : "RELEASE DATE:", latestTemplate);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("M/dd/yyyy");
+
+        return LocalDate.parse(releaseDateInString, dtf);
     }
 
     /**
