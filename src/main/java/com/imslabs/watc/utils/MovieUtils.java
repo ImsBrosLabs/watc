@@ -54,7 +54,7 @@ public class MovieUtils {
     }
 
     /**
-     * Extracts title from the older template text containing it.
+     * Extracts title² from the older template text containing it.
      * @param hayStack The text containing the title.
      * @return The title.
      */

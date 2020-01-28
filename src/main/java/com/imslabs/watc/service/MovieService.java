@@ -12,8 +12,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.NamedNodeMap;
 
 import java.io.IOException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -78,6 +80,13 @@ public class MovieService {
                         String movieInformationStr = movieInformationElement.get(0).getTextContent();
                         movie.setTitle(MovieUtils.extractTitleNew(movieInformationStr));
                         movie.setReleaseDate(MovieUtils.extractReleaseDateNew(movieInformationStr));
+
+                        HtmlElement posterElement = (HtmlElement) moviePage.getByXPath("//*[contains(@class, 'td-modal-image')]").get(0);
+
+                        if (posterElement != null) {
+                            NamedNodeMap posterElementParentAtrs = posterElement.getParentNode().getAttributes();
+                            movie.setPosterUrl(new URL(posterElementParentAtrs.getNamedItem("href").getNodeValue()));
+                        }
 
                     } else {
                         // Old template (retrieve the elements one by one)
