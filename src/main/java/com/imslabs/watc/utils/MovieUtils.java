@@ -1,10 +1,17 @@
 package com.imslabs.watc.utils;
 
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.w3c.dom.NamedNodeMap;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Optional;
 
 public class MovieUtils {
 
@@ -131,5 +138,27 @@ public class MovieUtils {
     private static String extractField(String hayStack, String label, boolean latestTemplate) {
         return latestTemplate ? StringUtils.strip(StringUtils.substringBetween(hayStack, label, "\n"), Consts.STRIPPED_CHARS) :
                 StringUtils.strip(StringUtils.substringAfter(hayStack, label), Consts.STRIPPED_CHARS);
+    }
+
+    /**
+     * Retrieves movie's poster URL (the highest resolution).
+     *
+     * @param moviePage the movie page HTML object.
+     * @return Instance of URL (could be empty).
+     * @throws MalformedURLException
+     */
+    public static Optional<URL> retrievePosterUrl(HtmlPage moviePage) throws MalformedURLException {
+        List<Object> posterUrlXpathResult = moviePage.getByXPath("//*[contains(@class, 'td-modal-image')]");
+
+        if (!posterUrlXpathResult.isEmpty()) {
+            HtmlElement posterElement = (HtmlElement) posterUrlXpathResult.get(0);
+
+            if (posterElement != null) {
+                NamedNodeMap posterElementParentAtrs = posterElement.getParentNode().getAttributes();
+                return Optional.of(new URL(posterElementParentAtrs.getNamedItem("href").getNodeValue()));
+            }
+        }
+
+        return Optional.empty();
     }
 }
