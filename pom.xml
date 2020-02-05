@@ -53,7 +53,7 @@
 
         <!-- Lombok -->
         <dependency>
-            <groupId>org.projectlombok</groupId>spring-boot-starter-parent
+            <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
