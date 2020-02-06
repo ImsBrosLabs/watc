@@ -3,7 +3,6 @@ package com.imslabs.watc.utils;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.w3c.dom.NamedNodeMap;
 
 import java.net.MalformedURLException;
@@ -122,7 +121,7 @@ public class MovieUtils {
      */
     private static LocalDate extractReleaseDate(String hayStack, boolean latestTemplate) {
         String releaseDateInString = extractField(hayStack, latestTemplate ? "Release Date:" : "RELEASE DATE:", latestTemplate);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("M/dd/yyyy");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("M/d/yyyy");
 
         return LocalDate.parse(releaseDateInString, dtf);
     }

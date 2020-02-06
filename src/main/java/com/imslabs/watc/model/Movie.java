@@ -13,5 +13,5 @@ public class Movie {
     private LocalDate releaseDate;
     private URL posterUrl;
     private Boolean hasExtrasDuringCredits;
-    private Boolean hasExtraAfterCredits;
+    private Boolean hasExtrasAfterCredits;
 }
