@@ -147,7 +147,7 @@ public class MovieUtils {
      * @throws MalformedURLException
      */
     public static Optional<URL> retrievePosterUrl(HtmlPage moviePage) throws MalformedURLException {
-        List<Object> posterUrlXpathResult = moviePage.getByXPath("//*[contains(@class, 'td-modal-image')]");
+        List<Object> posterUrlXpathResult = moviePage.getByXPath("//*[contains(@class, 'size-medium') and contains(@class, 'alignleft')]");
 
         if (!posterUrlXpathResult.isEmpty()) {
             HtmlElement posterElement = (HtmlElement) posterUrlXpathResult.get(0);

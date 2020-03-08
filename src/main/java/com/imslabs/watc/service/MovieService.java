@@ -122,8 +122,6 @@ public class MovieService {
                         movie.setHasExtrasAfterCredits(StringUtils.endsWith(StringUtils.lowerCase(extrasAfterCreditElement.getTextContent()), "yes"));
 
                     }
-
-
                 }
             }
         } catch (IOException e) {
