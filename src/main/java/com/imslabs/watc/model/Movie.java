@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class Movie {
@@ -14,4 +15,6 @@ public class Movie {
     private URL posterUrl;
     private Boolean hasExtrasDuringCredits;
     private Boolean hasExtrasAfterCredits;
+    private List<String> extrasDuringCredits;
+    private List<String> extrasAfterCredits;
 }

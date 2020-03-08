@@ -118,6 +118,8 @@ public class MovieService {
                         HtmlElement extrasDuringCreditElement = (HtmlElement) moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'during credits?')]").get(0);
                         movie.setHasExtrasDuringCredits(StringUtils.endsWith(StringUtils.lowerCase(extrasDuringCreditElement.getTextContent()), "yes"));
 
+                        // TODO : retrieve the extrasDuringCredits contained in the element with the class of 'easySpoilerWrapper' just after the 'during credits?' container element. Same for extrasAfterCredits
+
                         HtmlElement extrasAfterCreditElement = (HtmlElement) moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'after credits?')]").get(0);
                         movie.setHasExtrasAfterCredits(StringUtils.endsWith(StringUtils.lowerCase(extrasAfterCreditElement.getTextContent()), "yes"));
 
