@@ -75,38 +75,37 @@ public class MovieService {
 
 
                     List<HtmlElement> movieInformationElement = moviePage.getByXPath("//span[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'title:')]");
-                    if (!movieInformationElement.isEmpty()) {
-                        // newer movie info template (retrieving all the movie info here)
+
+                    if (!movieInformationElement.isEmpty()) { // newer movie info template (retrieving all the movie info here)
                         String movieInformationStr = movieInformationElement.get(0).getTextContent();
                         movie.setTitle(MovieUtils.extractTitleNew(movieInformationStr));
                         movie.setReleaseDate(MovieUtils.extractReleaseDateNew(movieInformationStr));
 
                         retrievePosterUrl(movie, moviePage);
 
-                        List<Object> extrasDuringCreditElementQuery = !moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'during credits?')]").isEmpty()
+                        List<Object> extrasDuringCreditElementResult = !moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'during credits?')]").isEmpty()
                                 ? moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'during credits?')]")
                                 : moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'are there any extras during the credits?')]");
-                        if (!extrasDuringCreditElementQuery.isEmpty()) {
-                            HtmlElement extrasDuringCreditElement = (HtmlElement) extrasDuringCreditElementQuery.get(0);
+                        if (!extrasDuringCreditElementResult.isEmpty()) {
+                            HtmlElement extrasDuringCreditElement = (HtmlElement) extrasDuringCreditElementResult.get(0);
                             movie.setHasExtrasDuringCredits(StringUtils.endsWith(StringUtils.lowerCase(extrasDuringCreditElement.getTextContent()), "yes"));
                         } else {
-                            extrasDuringCreditElementQuery = moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'are there any extras during the credits?')]");
-                            if (!extrasDuringCreditElementQuery.isEmpty()) {
-                                HtmlElement extrasDuringCreditElement = (HtmlElement) extrasDuringCreditElementQuery.get(0);
+                            extrasDuringCreditElementResult = moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'are there any extras during the credits?')]");
+                            if (!extrasDuringCreditElementResult.isEmpty()) {
+                                HtmlElement extrasDuringCreditElement = (HtmlElement) extrasDuringCreditElementResult.get(0);
                                 extrasDuringCreditElement.getTextContent();
-
                             }
                         }
 
-                        List<Object> extrasAfterCreditElementQuery = !moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'after credits?')]").isEmpty()
+                        List<Object> extrasAfterCreditElementResult = !moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'after credits?')]").isEmpty()
                                 ? moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'after credits?')]")
                                 : moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'are there any extras after the credits?')]");
-                        if (!extrasAfterCreditElementQuery.isEmpty()) {
-                            HtmlElement extrasAfterCreditElement = (HtmlElement) extrasAfterCreditElementQuery.get(0);
+                        if (!extrasAfterCreditElementResult.isEmpty()) {
+                            HtmlElement extrasAfterCreditElement = (HtmlElement) extrasAfterCreditElementResult.get(0);
                             movie.setHasExtrasAfterCredits(StringUtils.endsWith(StringUtils.lowerCase(extrasAfterCreditElement.getTextContent()), "yes"));
                         }
-                    } else {
-                        // Old template (retrieve the elements one by one)
+                    } else { // Old template (retrieve the elements one by one)
+
                         HtmlElement titleElement = (HtmlElement) moviePage.getByXPath("//p[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'),'title:')]").get(0);
                         movie.setTitle(MovieUtils.extractTitleOld(titleElement.getTextContent()));
 
@@ -123,8 +122,6 @@ public class MovieService {
                         movie.setHasExtrasAfterCredits(StringUtils.endsWith(StringUtils.lowerCase(extrasAfterCreditElement.getTextContent()), "yes"));
 
                     }
-
-
                 }
             }
         } catch (IOException e) {
